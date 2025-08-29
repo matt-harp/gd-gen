@@ -520,10 +520,8 @@ class Generator
     }
 
    public:
-    void generate(std::filesystem::path srcFolder)
+    void generate(std::filesystem::path srcFolder, std::filesystem::path genFolder)
     {
-        auto genFolder = (srcFolder.parent_path() / "generated");
-
         std::filesystem::create_directory(genFolder);
 
         std::vector<std::filesystem::path> srcFiles;

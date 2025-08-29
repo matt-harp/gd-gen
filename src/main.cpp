@@ -1,38 +1,34 @@
 #include "generator/generator.h"
 
-int main(int argc, char const *argv[])
-{
-    std::filesystem::path folder_path;
-    if (argc < 2)
-    {
-        std::cerr << "No path provided, defaulting to ../src\n";
-        folder_path = "../src";
-    }
-    else
-    {
-        folder_path = argv[1];
-    }
+int main(const int argc, char *argv[]) {
+    std::filesystem::path src_path;
+    std::filesystem::path dest_path;
 
-    folder_path = folder_path.lexically_normal();
+    if (argc < 3) {
+        std::cerr << "Usage: " << argv[0] << "src_path dest_path" << '\n';
+        return 1;
+    }
+    src_path = argv[1];
+    dest_path = argv[2];
+
+    src_path = src_path.lexically_normal();
+    dest_path = dest_path.lexically_normal();
 
     // Removes trailing slashes
-    folder_path = folder_path.filename().empty() ? folder_path.parent_path() : folder_path;
+    src_path = src_path.filename().empty() ? src_path.parent_path() : src_path;
+    dest_path = dest_path.filename().empty() ? dest_path.parent_path() : dest_path;
 
-    if (!std::filesystem::exists(folder_path))
-    {
-        std::cerr << "Error: Path does not exist: " << folder_path << '\n';
+    if (!std::filesystem::exists(src_path)) {
+        std::cerr << "Error: Path does not exist: " << src_path << '\n';
         return 1;
     }
 
-    if (!std::filesystem::is_directory(folder_path))
-    {
-        std::cerr << "Error: Path is not a directory: " << folder_path << '\n';
+    if (!std::filesystem::is_directory(src_path)) {
+        std::cerr << "Error: Path is not a directory: " << src_path << '\n';
         return 1;
     }
-
-    std::cout << "Generating code for " << folder_path << '\n';
 
     Generator generator;
-    generator.generate(folder_path);
+    generator.generate(src_path, dest_path);
     return 0;
 }
